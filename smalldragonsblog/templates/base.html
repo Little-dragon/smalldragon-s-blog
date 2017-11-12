@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    {% block head %}{% endblock %}
+    <!--<link rel="stylesheet" href="{{ url_for('static' , filename='css/base.css') }}">-->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+      integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+      crossorigin="anonymous">
+    <!--<link rel="stylesheet" href="{{ url_for('static' , filename='css/bootstrap.min.css') }}">-->
+    <link rel="stylesheet" href="{{ url_for('static' , filename='css/base.css') }}">
+    <!--{% assets "main_css" %}-->
+      <!--<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">-->
+    <!--{% endassets %}-->
+</head>
+<!--<body background="{{ url_for('static',filename='css/IMG_0247.JPG') }}">
+css页面有什么无法更改的，使用！important强制进行修改-->
+<body>
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{ url_for('blog.login') }}">Small Dragon</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-left">
+        <li><a href="#">Get Started</a></li>
+        <li><a href="#">School Edition</a></li>
+        <li><a href="#">Store</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Aa<span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Spanish</a></li>
+            <li><a href="#">German</a></li>
+            <li><a href="#">More Languages</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">One hand typing</a></li>
+          </ul>
+        </li>
+        <li><a href="{{ url_for('blog.login') }}">Login</a></li>
+        <li><a class="btn" id="btn_regist" href="{{ url_for('blog.regist') }}">Regist</a></li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+<hr>
+<!--get_flashed_messages可选参数，with_categories=true允许接受日志-->
+{% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <div class="button" class="close" data-dismiss="alert" aria-label="Close">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            {{ message }}
+          </div>
+        {% endfor%}
+      {% endif %}
+    {% endwith %}
+
+{% macro render_pagination(pagination , endpoint) %}
+<nav class="down_pagination">
+  <ul class="pagination">
+    <!-- 迭代器，返回一个在分页导航中显示的页数列表,page为分页时遍历出的每个索引,pagination.page为你访问的索引, -->
+    {% for page in pagination.iter_pages(left_edge=0,left_current=5,right_current=5,right_edge=0) %}
+      {% if page %}
+        {% if pagination.page < 6 and page == 1 and pagination.page != 1%}
+          <li class="page"><a href="{{ url_for(endpoint, page=pagination.prev_num ) }}">&lt;上一页</a></li>
+        {% elif pagination.page != 1 and page == pagination.page - 5 %}
+            <li class="page"><a href="{{ url_for(endpoint, page=pagination.prev_num) }}">&lt;上一页</a></li>
+        {% endif %}
+
+        <!-- 使当前页面加上active类 -->
+        {% if page != pagination.page %}
+          <li><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+        {% else %}
+          <li class="active"><a href="{{ url_for(endpoint, page=page) }}">{{ page }}</a></li>
+        {% endif %}
+
+        <!-- 使分页数等于10(当分页总数大于10时,索引为1,只分了4页) -->
+        {% if pagination.page + 3 < 10 and pagination.pages > 10 and pagination.page + 3 == page %}
+          {% for value in range(1 , 8 - pagination.page) %}
+          <li><a href="{{ url_for(endpoint, page=page + value) }}">{{ page + value }}</a></li>
+          {% endfor %}
+        {% endif %}
+
+        {% if pagination.page + 4 < 10 and pagination.page + 4 == page %}
+          <li class="page"><a href="{{ url_for(endpoint, page=pagination.next_num) }}">下一页&gt;</a></li>
+        {% elif pagination.page != pagination.pages and page == pagination.page + 4 %}
+          <li class="page"><a href="{{ url_for(endpoint, page=pagination.next_num) }}">下一页&gt;</a></li>
+        {% elif pagination.page != pagination.pages and pagination.page + 4 > pagination.pages and page == pagination.pages %}
+          <li class="page"><a href="{{ url_for(endpoint, page=pagination.next_num) }}">下一页&gt;</a></li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
+{% endmacro %}
+
+{% block body %}
+
+{% endblock %}
+
+<!--Bootstrap jquery需要在js前引入否则下拉菜单无法使用-->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<!--<script src='https://www.google.com/recaptcha/api.js'></script>-->
+</body>
+</html>

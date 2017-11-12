@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Small Dragon's Blog{% endblock %}
+
+{% block body %}
+<div class="row">
+	<div class="col-md-9">
+		{% for post in posts.items %}
+		<div class="row">
+			<div class="col-md-12">
+				<h1>{{ post.title }}</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">{{ post.text | truncate(255) | safe }}<a href="{{ url_for('blog.index' , post_id=post.id) }}">Read More</a></div>
+		</div>
+		{% endfor %}
+	</div>
+	<div class="col-md-3">
+		<div class="row">
+			<h5>Recent Posts</h5>
+			<ul>
+				{% for post in recent %}
+				<!-- Set the link for recent posts. -->
+				<li><a href="{{url_for('blog.index', post_id=post.id)}}">{{ post.title }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	<div class="row">
+		<h5>Popular Tags</h5>
+		<ul>
+		{% for tag in top_tags %}
+			<li>{{ tag[0].name }}</li>
+		{% endfor %}
+		</ul>
+	</div>
+</div>
+{{ render_pagination(posts, 'blog.home') }}
+{% endblock %}

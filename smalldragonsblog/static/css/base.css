@@ -1,0 +1,27 @@
+#btn_login{
+    margin : 10px 15px;
+}
+
+#btn_regist{
+    margin : 5px 5px;
+    padding : 10px 10px !important;
+    border: 1px solid rgba(236,97,73,.7);
+    border-radius: 10px;
+    color: #ea6f5a;
+}
+
+.down_pagination{
+    margin-left : 120px;
+}
+
+.pagination>li>a{
+    width : 60px;
+}
+
+.pagination>li{
+    text-align : center;
+}
+
+.page>a {
+    width : 80px !important;
+}
